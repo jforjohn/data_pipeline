@@ -32,8 +32,8 @@ def health_check():
         content['DB connection'] = 'DB unavailable'
         return JSONResponse(content=content)'''
 
-@router.get('/insert2db')
+@router.post('/insert2db')
 async def insert2db():
-    print('pame')
     task_id = worker2db.delay()
     return str(task_id)
+
