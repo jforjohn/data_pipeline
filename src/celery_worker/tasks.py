@@ -18,10 +18,10 @@ celery_log = get_task_logger(__name__)
 
 @celery_app.task(name='insert2db')
 def worker2db():
-    celery_log.info(f"Celery task: insert2db edo!")
-    dbwrite()
+    celery_log.info(f"Celery task: insert2db started!")
+    ret = dbwrite()
     celery_log.info(f"Celery task: insert2db completed!")
-    return 'OK'
+    return ret
 
 @celery_app.task(name='test')
 def reverse():
