@@ -1,12 +1,19 @@
 import configparser
 import sys
 import traceback
+from os import path
 from .customInterpolation import EnvInterpolation
 
 requiredConfig = {
     }
+PROJECT_PATH = path.join(
+    path.dirname(path.abspath(__file__)),
+    path.pardir
+)
 
-def load(config_file='../config.ini'):
+config_file_default = path.join(PROJECT_PATH, 'config.ini')
+
+def load(config_file=config_file_default):
   """
   Reads configuration file
   """
