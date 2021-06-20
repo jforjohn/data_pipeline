@@ -1,0 +1,45 @@
+version: '2'
+services:
+   
+  postgres:
+    container_name: api_ml_postgres
+    image: postgres:11.2-alpine
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_PORT=${DB_PORT}
+    #volumes:
+    #  - ./db:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    expose:
+      - "${DB_PORT}"
+    restart: always
+    networks:
+      - rest_ml
+    labels:
+      service: "svc_ml"
+
+  api_ml_rabbitmq:
+    image: rabbitmq:latest
+    container_name: api_ml_rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./rbmq/etc/:/etc/backend/
+      - ./rbmq/data/:/var/lib/backend/
+      - ./rbmq/logs/:/var/log/backend/
+    hostname: api_ml_rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RBMPQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RBMPQ_PASS}
+    restart: always
+    networks:
+      - rest_ml
+    labels:
+      service: "svc_ml"
+
+networks:
+  rest_ml:
