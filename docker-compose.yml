@@ -1,14 +1,55 @@
 version: '2'
 services:
-   
-  postgres:
-    container_name: api_ml_postgres
+  fastapi_ml:
+    build:
+      context: .
+      dockerfile: ./docker/api_Dockerfile
+    container_name: fastapi_ml
+    image: fastapi_ml:latest
+    volumes:
+      - ./src:/fastapi_ml
+    command: ["uvicorn", "api.endpoint:app", "--host", "0.0.0.0", "--debug", "--port", "8080", "--reload"]
+    env_file: .env
+    depends_on:
+      - ml_postgres
+      - ml_worker
+    ports:
+      - 8080:8080
+    expose:
+      - "8080"
+    restart: always
+    networks:
+      - rest_ml
+    labels:
+      service: "svc_ml"
+
+  ml_worker:
+    build:
+      context: .
+      dockerfile: ./docker/celery_Dockerfile
+    image: ml_celery:latest
+    command: ['celery', '-A', 'celery_worker.tasks', 'worker', '--loglevel=info']
+    volumes:
+      - ./data:/data
+      - ./src:/usr/src
+    env_file: .env
+    depends_on:
+        - ml_rabbitmq
+    restart: always
+    networks:
+      - rest_ml
+    labels:
+      service: "svc_ml"
+  
+  ml_postgres:
+    container_name: ml_postgres
     image: postgres:11.2-alpine
     environment:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_PORT=${DB_PORT}
+      - POSTGRES_HOST=${DB_HOST}
     #volumes:
     #  - ./db:/var/lib/postgresql/data
     ports:
@@ -21,9 +62,28 @@ services:
     labels:
       service: "svc_ml"
 
-  api_ml_rabbitmq:
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment: 
+      - PGADMIN_LISTEN_PORT=5342
+      - PGADMIN_DEFAULT_PASSWORD=${DB_PASSWORD}
+      - PGADMIN_DEFAULT_EMAIL=giannisotiro@gmail.com
+    ports:
+      - "5342:5342"
+    expose:
+      - "5342"
+    depends_on:
+      - ml_postgres
+    restart: always
+    networks:
+      - rest_ml
+    labels:
+      service: "svc_ml"
+
+  ml_rabbitmq:
     image: rabbitmq:latest
-    container_name: api_ml_rabbitmq
+    container_name: ml_rabbitmq
     ports:
       - 5672:5672
       - 15672:15672
@@ -31,7 +91,7 @@ services:
       - ./rbmq/etc/:/etc/backend/
       - ./rbmq/data/:/var/lib/backend/
       - ./rbmq/logs/:/var/log/backend/
-    hostname: api_ml_rabbitmq
+    hostname: ${RBMPQ_HOST}
     environment:
       - RABBITMQ_DEFAULT_USER=${RBMPQ_USER}
       - RABBITMQ_DEFAULT_PASS=${RBMPQ_PASS}

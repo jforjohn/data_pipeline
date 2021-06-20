@@ -9,9 +9,11 @@ RUN apt-get update \
 ENV PYTHONPATH="${PYTHONPATH}:/fastapi_ml"
 WORKDIR "/fastapi_ml"
 
-COPY ./docker/requirements_api.txt .
+COPY ./docker/requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
-    && pip install --no-cache-dir --progress-bar off -r requirements_api.txt \
+    && pip install --no-cache-dir --progress-bar off -r requirements.txt \
     && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir --progress-bar off sqlalchemy
 
 EXPOSE 8080

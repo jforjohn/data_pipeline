@@ -4,12 +4,12 @@ FROM python:3.8.6-slim
 
 #COPY .src/config.cfg /usr/src/
 
-COPY ./docker/requirements_celery.txt /usr/src/
+COPY ./docker/requirements.txt /usr/src/
 
-COPY ./src/celery_worker /usr/src/celery_worker
-COPY ./src/db_scripts /usr/src/db_scripts
-COPY ./src/__init__.py /usr/src/
+#COPY ./src/celery_worker /usr/src/celery_worker
+#COPY ./src/db_scripts /usr/src/db_scripts
+#COPY ./src/__init__.py /usr/src/
 
-RUN pip3 install -r /usr/src/requirements_celery.txt
+RUN pip3 install -r /usr/src/requirements.txt
 
 WORKDIR /usr/src
