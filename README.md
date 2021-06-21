@@ -70,3 +70,11 @@ For the sake of simplicity we store the results locally and in the folder indica
 In Jupyter Notebook (`src/TestAPIquery.ipynb`) we test the queries and how we can use the response to access the data.
 
 To start playing around the API you can go to `http:<IP>:8080/api/v1/svc_ml/docs` where you can see all the endpoints, their arguments and their methods to be called.
+
+TODOs:
+- apply model predict
+- take tests from jupyter and create some integration tests
+- unit tests for API
+- gather metrics
+- imrpove logging outside of worker as well
+- make it as a package with setuptools
