@@ -16,11 +16,14 @@ config = load()
 
 # TODO: fix invalid literal for int() with base 10 for integer env vars
 RBMPQ_PORT = config.get('credentials', 'RBMPQ_PORT')
-print(RBMPQ_PORT)
 RBMPQ_USER = config.get('credentials', 'RBMPQ_USER')
 RBMPQ_PASS = config.get('credentials', 'RBMPQ_PASS')
 RBMPQ_HOST = config.get('credentials', 'RBMPQ_HOST')
 
 
 BROKER_CONN_URI = f"amqp://{RBMPQ_USER}:{RBMPQ_PASS}@{RBMPQ_HOST}:{RBMPQ_PORT}"
-celery_app = Celery('svc_ml', broker=BROKER_CONN_URI)
+celery_app = Celery(
+    'svc_ml', 
+    broker=BROKER_CONN_URI,
+    backend='rpc://'
+    )
