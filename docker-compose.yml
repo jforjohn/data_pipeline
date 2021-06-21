@@ -50,8 +50,8 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_PORT=${DB_PORT}
       - POSTGRES_HOST=${DB_HOST}
-    #volumes:
-    #  - ./db:/var/lib/postgresql/data
+    volumes:
+      - ./db:/var/lib/postgresql/data
     ports:
       - "${DB_PORT}:${DB_PORT}"
     expose:
