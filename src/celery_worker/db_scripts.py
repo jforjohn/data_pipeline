@@ -1,5 +1,4 @@
 from os import path
-from kombu.exceptions import OperationalError
 import pandas as pd
 import sys
 from celery.utils.log import get_task_logger
@@ -50,7 +49,7 @@ def dbwrite():
                      header = 'infer',
                      error_bad_lines = False)
     df['url'] = df['id'].map(
-        lambda x: path.join(images_path, str(x))
+        lambda x: path.join(images_path, f'{str(x)}.jpg')
         )
     df.set_index('id', inplace=True)
     try:
@@ -58,5 +57,18 @@ def dbwrite():
     except DatabaseError as e:
         celery_log.error(f'No connection to DB: {e}')
         return 'Not ok'
-
     return 'ok'
+
+def dbsimplequery(filters):
+    """
+    Simple conjunctive query
+    :param filters: dict 
+    """
+    where_cond = [f"{k}='{v}'" for k,v in filters.items()]
+    where_sql = (' and ').join(where_cond)
+    if where_sql:
+        where_sql = 'where ' + where_sql
+    query = f'select * from "styles_data" {where_sql}'
+    df = pd.read_sql_query(query, con=engine)
+    df.drop_duplicates(inplace=True)
+    return df, config
