@@ -68,3 +68,5 @@ In `config.ini` you can configure at the moment where your data is located and w
 For the sake of simplicity we store the results locally and in the folder indicated in `config.ini` in folders using the name of task_id. 
 
 In Jupyter Notebook (`src/TestAPIquery.ipynb`) we test the queries and how we can use the response to access the data.
+
+To start playing around the API you can go to `http:<IP>:8080/api/v1/svc_ml/docs` where you can see all the endpoints, their arguments and their methods to be called.

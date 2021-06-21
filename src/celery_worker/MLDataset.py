@@ -5,6 +5,10 @@ from torchvision.transforms import Resize
 from .custom_tranformations import DynamicCrop
 
 class MLDataset(Dataset):
+    """
+    Class to access metadata df and
+    apply transformations
+    """
     def __init__(self, metadata):
         # metadata are indexed by col id
         self.metadata = metadata

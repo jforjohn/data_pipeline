@@ -5,6 +5,13 @@ from celery.utils.log import get_task_logger
 celery_log = get_task_logger(__name__)
 
 def create_outputdir(config, task_id):
+    """
+    :param config: Configparser
+    :param task_id: Celery object
+    :return: str
+    Returns the path to store the results of 
+    the query
+    """
     data_folder = config.get('data', 'folder')
     output_folder = config.get('data', 'output')
     result_path = path.join(data_folder, output_folder)
@@ -17,6 +24,14 @@ def create_outputdir(config, task_id):
     return task_path
 
 def save_results(df, config, task_id, transformations):
+    """
+    :param df: pandas.DataFrame
+    :param config: configparser.ConfigParser
+    :param task_id: celery obeject holding the task
+    :param transformation: boolean
+    :return: None
+    It stores the images that df holds.
+    """
     celery_log.info('Prepare results')
     task_path = create_outputdir(config, task_id)
     celery_log.info(f'Transformations: {transformations}')

@@ -4,6 +4,7 @@ import traceback
 from os import path
 from .customInterpolation import EnvInterpolation
 
+# sections that need to be apparent
 requiredConfig = {
     }
 PROJECT_PATH = path.join(

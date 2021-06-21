@@ -15,6 +15,9 @@ def worker2db():
 
 @celery_app.task(name='dbsimplequery')
 def worker2query(filters, transformations=False, cur_taskid=None):
+    """
+    Queries the db according to the requested filters and stores the results (taking into account if transformations were requested or not)
+    """
     celery_log.info(f"Celery task: simple query started!")
     if cur_taskid is None:
         cur_taskid = worker2query.request.id
@@ -27,11 +30,15 @@ def worker2query(filters, transformations=False, cur_taskid=None):
 
 @celery_app.task(name='dbquerytransform')
 def worker2transform(filters):
+    """
+    Does the same as worker2query but it saves
+    the transformed version of the images
+    """
     cur_taskid = worker2transform.request.id
     ret = worker2query(filters, transformations=True, cur_taskid=cur_taskid)
     return ret
 
 @celery_app.task(name='test')
 def reverse():
-    text = 'Jay'
+    text = 'Yiannis'
     return text[::-1]
